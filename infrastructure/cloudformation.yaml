@@ -80,6 +80,12 @@ Parameters:
     Default: 10
     ConstraintDescription: Must be a value 5-20 for cost control purposes
 
+Mappings:
+  UserConfig: 
+    Login: 
+      Name: "student"
+      Pass: "password"
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -510,8 +516,77 @@ Resources:
       VolumeType: gp2
 
   Group:
-
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: Students
+      Path: /
+      Policies:
+        - PolicyName: String
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement: 
+              - Effect: "Allow"
+                Action: 
+                  - "iam:ListInstanceProfiles"
+                Resource: "*"
+              - Effect: "Allow"
+                Action: 
+                  - "ec2:Describe*"
+                Resource: "*"
+                Condition: 
+                  StringEquals:
+                    ec2:Region: "us-west-2"
+              - Effect: "Allow"
+                Action: 
+                  - "iam:ListUsers"
+                Resource: "*"
+              - Effect: "Allow"
+                Action: 
+                  - "iam:ListUserPolicies",
+                  - "iam:ListAttachedUserPolicies",
+                  - "iam:ListSSHPublicKeys",
+                  - "iam:ListAccessKeys",
+                  - "iam:ListServiceSpecificCredentials"
+                Resource: 
+                  Fn::Join: 
+                    - ""
+                    - - "arn:aws:iam::"
+                      - Ref: AWS::AccountId
+                      - ":user/${aws:username}"
+              - Effect: "Allow"
+                Action: 
+                  - "elasticloadbalancing:DescribeLoadBalancers"
+                Resource: "*"
+              - Effect: "Allow"
+                Action: 
+                  - "eks:*"
+                Resource: "*"
+              - Effect: "Deny"
+                Action: 
+                  - "eks:CreateCluster"
+                Resource: "*"
+              - Effect: "Deny"
+                Action: 
+                  - "ec2:*Host*"
+                Resource: "*"
+  
   User:
+    Type: AWS::IAM::User
+    Properties: 
+      Groups:
+        - Students
+      LoginProfile:
+        Password:
+          Fn::FindInMap: 
+          - UserConfig
+          - Login
+          - Pass
+      Path: "/"
+      UserName: 
+          Fn::FindInMap: 
+          - UserConfig
+          - Login
+          - Name
 
 Outputs:
   SubnetIds:
