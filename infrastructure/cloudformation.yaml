@@ -542,10 +542,10 @@ Resources:
                 Resource: "*"
               - Effect: "Allow"
                 Action: 
-                  - "iam:ListUserPolicies",
-                  - "iam:ListAttachedUserPolicies",
-                  - "iam:ListSSHPublicKeys",
-                  - "iam:ListAccessKeys",
+                  - "iam:ListUserPolicies"
+                  - "iam:ListAttachedUserPolicies"
+                  - "iam:ListSSHPublicKeys"
+                  - "iam:ListAccessKeys"
                   - "iam:ListServiceSpecificCredentials"
                 Resource: 
                   Fn::Join: 
