@@ -299,6 +299,7 @@ Resources:
                   - "iam:CreateServiceLinkedRole"
                   - "iam:CreateInstanceProfile"
                   - "iam:AddRoleToInstanceProfile"
+                  - "iam:GetInstanceProfile"
                 Resource: "*"
               - Effect: "Allow"
                 Action:
